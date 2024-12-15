@@ -1,0 +1,9 @@
+---
+	import {SCORE_API_ENDPOINT} from 'astro:env/server'
+
+
+	const res = await fetch(SCORE_API_ENDPOINT)
+
+  const scoreValue = await res.text()
+---
+<span class="text-xs" >✨ Score: {scoreValue}/5</span>

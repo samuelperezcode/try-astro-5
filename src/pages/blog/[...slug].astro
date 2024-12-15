@@ -1,6 +1,12 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import {SHOW_BUY_BUTTON} from 'astro:env/server'
+import BuyButton from '../../components/BuyButton.astro';
+import BookScore from '../../components/BookScore.astro';
+import AmazonLogo from '../../components/AmazonLogo.astro';
+
+export const prerender = true
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -19,6 +25,24 @@ const { Content } = await render(post);
 	<main class="flex flex-col items-center gap-12">
 		<article class="text-center">
 			<img src={post.data.heroImage} alt={`Image for ${post.data.title}`} class="w-full rounded-md shadow-lg" transition:name={`image-${post.id}`} />
+			<div class="pt-4">
+				{
+					SHOW_BUY_BUTTON && (
+					<BuyButton server:defer buy={post.data.buy}>
+						<button
+							slot="fallback"
+							class="text-balance inline-flex gap-2 items-center bg-yellow-400 hover:bg-yellow-500 active:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg border border-yellow-500 transition duration-200 ease-in-out hover:scale-105 justify-center text-center"
+						>
+							Comprar en Amazon
+							<AmazonLogo />
+						</button>
+					</BuyButton>
+					)
+				}
+				<BookScore server:defer>
+					<span class="text-xs"  slot="fallback">✨ Score: Loading...</span>
+				</BookScore>
+			</div>
 			<h1 class="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
 				<span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400"> {post.data.title} <span>
 			</h1>
@@ -29,3 +53,5 @@ const { Content } = await render(post);
 		<Content />
 	</main>
 </Layout>
+
+
